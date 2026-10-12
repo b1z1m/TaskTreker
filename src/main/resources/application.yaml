@@ -18,7 +18,6 @@ spring:
     type: redis
     redis:
       time-to-live: 10m
-
-server:
-  error:
-    include-message: always
+  web:
+    error:
+      include-message: always

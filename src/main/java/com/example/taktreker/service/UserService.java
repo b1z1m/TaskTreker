@@ -25,8 +25,8 @@ public class UserService {
     private final UserMapper userMapper;
 
     public UserResponse createUser(UserRequest request) {
-        if (userRepository.findByEmail(request.getEmail()).isPresent()) {
-            throw new EmailAlreadyExistsException(request.getEmail());
+        if (userRepository.findByEmail(request.email()).isPresent()) {
+            throw new EmailAlreadyExistsException(request.email());
         }
 
         User saved = userRepository.save(userMapper.toEntity(request));
@@ -49,15 +49,15 @@ public class UserService {
     public UserResponse updateUser(Long id, UserRequest request) {
         User user = getUser(id);
 
-        boolean emailChanged = !user.getEmail().equals(request.getEmail());
-        if (emailChanged && userRepository.findByEmail(request.getEmail()).isPresent()) {
-            throw new EmailAlreadyExistsException(request.getEmail());
+        boolean emailChanged = !user.getEmail().equals(request.email());
+        if (emailChanged && userRepository.findByEmail(request.email()).isPresent()) {
+            throw new EmailAlreadyExistsException(request.email());
         }
 
-        user.setFirstName(request.getFirstName());
-        user.setLastName(request.getLastName());
-        user.setEmail(request.getEmail());
-        user.setPassword(request.getPassword());
+        user.setFirstName(request.firstName());
+        user.setLastName(request.lastName());
+        user.setEmail(request.email());
+        user.setPassword(request.password());
 
         User saved = userRepository.save(user);
         log.info("Обновлён пользователь id={}", id);

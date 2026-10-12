@@ -1,7 +1,7 @@
 package com.example.taktreker.controller;
 
-import com.example.taktreker.Category;
-import com.example.taktreker.TaskStatus;
+import com.example.taktreker.entity.Category;
+import com.example.taktreker.entity.TaskStatus;
 import com.example.taktreker.dto.CreateTaskRequest;
 import com.example.taktreker.dto.CreateTaskResponse;
 import com.example.taktreker.service.TaskService;

@@ -1,7 +1,7 @@
 package com.example.taktreker.data;
 
-import com.example.taktreker.Category;
-import com.example.taktreker.TaskStatus;
+import com.example.taktreker.entity.Category;
+import com.example.taktreker.entity.TaskStatus;
 import com.example.taktreker.entity.Task;
 import org.springframework.data.jpa.repository.JpaRepository;
 

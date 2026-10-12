@@ -1,7 +1,5 @@
 package com.example.taktreker.entity;
 
-import com.example.taktreker.Category;
-import com.example.taktreker.TaskStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -19,16 +17,24 @@ public class Task {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Column(nullable = false)
-    String name;
-    String description;
+    private String name;
+
+    private String description;
+
     @Enumerated(EnumType.STRING)
-    Category category;
+    private Category category;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    TaskStatus status;
+    private TaskStatus status;
+
     @ManyToOne
-    User user;
-    LocalDateTime created;
-    LocalDateTime deadline;
+    private User user;
+
+    @Column(updatable = false)
+    private LocalDateTime created = LocalDateTime.now();
+
+    private LocalDateTime deadline;
 }

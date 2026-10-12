@@ -15,10 +15,10 @@ public class TaskMapper {
 
     public Task toEntity(CreateTaskRequest request, User user) {
         Task task = new Task();
-        task.setName(request.getName());
-        task.setDescription(request.getDescription());
-        task.setCategory(request.getCategory());
-        task.setDeadline(request.getDeadline());
+        task.setName(request.name());
+        task.setDescription(request.description());
+        task.setCategory(request.category());
+        task.setDeadline(request.deadline());
         task.setUser(user);
         return task;
     }

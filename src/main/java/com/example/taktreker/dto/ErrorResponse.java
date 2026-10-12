@@ -1,14 +1,10 @@
 package com.example.taktreker.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-
 import java.time.LocalDateTime;
 
-@Data
-@AllArgsConstructor
-public class ErrorResponse {
-    int status;
-    String message;
-    LocalDateTime timestamp;
+public record ErrorResponse(
+        int status,
+        String message,
+        LocalDateTime timestamp
+) {
 }

@@ -11,10 +11,10 @@ public class UserMapper {
     public User toEntity(UserRequest request) {
         return new User(
                 null,
-                request.getFirstName(),
-                request.getLastName(),
-                request.getEmail(),
-                request.getPassword()
+                request.firstName(),
+                request.lastName(),
+                request.email(),
+                request.password()
         );
     }
 

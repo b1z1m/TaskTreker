@@ -1,7 +1,7 @@
 package com.example.taktreker.service;
 
-import com.example.taktreker.Category;
-import com.example.taktreker.TaskStatus;
+import com.example.taktreker.entity.Category;
+import com.example.taktreker.entity.TaskStatus;
 import com.example.taktreker.data.TaskRepository;
 import com.example.taktreker.dto.CreateTaskRequest;
 import com.example.taktreker.dto.CreateTaskResponse;
@@ -16,7 +16,6 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Slf4j
@@ -30,11 +29,10 @@ public class TaskService {
 
     @CacheEvict(value = "taskLists", allEntries = true)
     public CreateTaskResponse createTask(CreateTaskRequest request) {
-        User user = userService.getUser(request.getUserId());
+        User user = userService.getUser(request.userId());
 
         Task task = taskMapper.toEntity(request, user);
-        task.setCreated(LocalDateTime.now());
-        task.setStatus(request.getStatus() != null ? request.getStatus() : TaskStatus.TODO);
+        task.setStatus(request.status() != null ? request.status() : TaskStatus.TODO);
 
         Task saved = taskRepository.save(task);
         log.info("Создана задача id={} для пользователя id={}", saved.getId(), user.getId());
@@ -74,12 +72,12 @@ public class TaskService {
     })
     public CreateTaskResponse updateTask(Long id, CreateTaskRequest request) {
         Task task = getTask(id);
-        task.setName(request.getName());
-        task.setDescription(request.getDescription());
-        task.setCategory(request.getCategory());
-        task.setDeadline(request.getDeadline());
-        if (request.getStatus() != null) {
-            task.setStatus(request.getStatus());
+        task.setName(request.name());
+        task.setDescription(request.description());
+        task.setCategory(request.category());
+        task.setDeadline(request.deadline());
+        if (request.status() != null) {
+            task.setStatus(request.status());
         }
 
         Task saved = taskRepository.save(task);
