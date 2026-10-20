@@ -4,12 +4,14 @@ import com.example.taktreker.entity.Category;
 import com.example.taktreker.entity.TaskStatus;
 import com.example.taktreker.dto.CreateTaskRequest;
 import com.example.taktreker.dto.CreateTaskResponse;
+import com.example.taktreker.dto.PageResponse;
 import com.example.taktreker.service.TaskService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/tasks")
@@ -24,9 +26,11 @@ public class TaskController {
     }
 
     @GetMapping
-    public List<CreateTaskResponse> getTasks(@RequestParam(required = false) Category category,
-                                             @RequestParam(required = false) TaskStatus status) {
-        return taskService.getTasks(category, status);
+    public PageResponse<CreateTaskResponse> getTasks(
+            @RequestParam(required = false) Category category,
+            @RequestParam(required = false) TaskStatus status,
+            @ParameterObject @PageableDefault(size = 20, sort = "id") Pageable pageable) {
+        return taskService.getTasks(category, status, pageable);
     }
 
     @GetMapping("/{id}")

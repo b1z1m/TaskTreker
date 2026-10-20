@@ -5,6 +5,7 @@ import com.example.taktreker.entity.TaskStatus;
 import com.example.taktreker.data.TaskRepository;
 import com.example.taktreker.dto.CreateTaskRequest;
 import com.example.taktreker.dto.CreateTaskResponse;
+import com.example.taktreker.dto.PageResponse;
 import com.example.taktreker.entity.Task;
 import com.example.taktreker.entity.User;
 import com.example.taktreker.exception.NotFoundException;
@@ -14,9 +15,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Slf4j
 @Service
@@ -47,23 +48,21 @@ public class TaskService {
     }
 
     @Cacheable("taskLists")
-    public List<CreateTaskResponse> getTasks(Category category, TaskStatus status) {
-        log.info("Список задач загружается из БД: category={}, status={}", category, status);
+    public PageResponse<CreateTaskResponse> getTasks(Category category, TaskStatus status, Pageable pageable) {
+        log.info("Задачи загружаются из БД: category={}, status={}, page={}", category, status, pageable);
 
-        List<Task> tasks;
+        Page<Task> tasks;
         if (category != null && status != null) {
-            tasks = taskRepository.findByCategoryAndStatus(category, status);
+            tasks = taskRepository.findByCategoryAndStatus(category, status, pageable);
         } else if (category != null) {
-            tasks = taskRepository.findByCategory(category);
+            tasks = taskRepository.findByCategory(category, pageable);
         } else if (status != null) {
-            tasks = taskRepository.findByStatus(status);
+            tasks = taskRepository.findByStatus(status, pageable);
         } else {
-            tasks = taskRepository.findAll();
+            tasks = taskRepository.findAll(pageable);
         }
 
-        return tasks.stream()
-                .map(taskMapper::toResponse)
-                .toList();
+        return PageResponse.from(tasks.map(taskMapper::toResponse));
     }
 
     @Caching(evict = {

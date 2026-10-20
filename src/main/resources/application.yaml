@@ -8,14 +8,18 @@ spring:
   jpa:
     hibernate:
       ddl-auto: validate
+    show-sql: true
   liquibase:
     change-log: classpath:db/changelog/db.changelog-master.yaml
   data:
+    web:
+      pageable:
+        max-page-size: 100
     redis:
       host: localhost
       port: 6379
   cache:
-    type: redis
+    type: none
     redis:
       time-to-live: 10m
   web:
