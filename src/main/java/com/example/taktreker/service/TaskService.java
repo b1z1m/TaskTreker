@@ -15,9 +15,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
 
 @Slf4j
 @Service
@@ -46,21 +47,15 @@ public class TaskService {
         log.info("Задача id={} загружается из БД", id);
         return taskMapper.toResponse(getTask(id));
     }
-
+    // c помощью @Query убрана конструкция if/else на 11 строк, вместо нее 1 строка
     @Cacheable("taskLists")
-    public PageResponse<CreateTaskResponse> getTasks(Category category, TaskStatus status, Pageable pageable) {
-        log.info("Задачи загружаются из БД: category={}, status={}, page={}", category, status, pageable);
+    public PageResponse<CreateTaskResponse> getTasks(Category category,
+            TaskStatus status, LocalDateTime from, LocalDateTime to, Pageable pageable) {
 
-        Page<Task> tasks;
-        if (category != null && status != null) {
-            tasks = taskRepository.findByCategoryAndStatus(category, status, pageable);
-        } else if (category != null) {
-            tasks = taskRepository.findByCategory(category, pageable);
-        } else if (status != null) {
-            tasks = taskRepository.findByStatus(status, pageable);
-        } else {
-            tasks = taskRepository.findAll(pageable);
-        }
+        log.info("Задачи загружаются из БД: category={}, status={}, from={}," +
+                " to={}, page={}", category, status, from, to,  pageable);
+
+        var tasks = taskRepository.search(status, category, from, to, pageable);
 
         return PageResponse.from(tasks.map(taskMapper::toResponse));
     }

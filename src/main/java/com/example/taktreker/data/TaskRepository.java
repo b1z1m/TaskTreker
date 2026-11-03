@@ -11,19 +11,23 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.time.LocalDateTime;
+
 public interface TaskRepository extends JpaRepository<Task, Long> {
-    @EntityGraph(attributePaths = "user")
-    Page<Task> findByCategory(Category category, Pageable pageable);
 
     @EntityGraph(attributePaths = "user")
-    Page<Task> findByStatus(TaskStatus status, Pageable pageable);
-
-    @EntityGraph(attributePaths = "user")
-    Page<Task> findByCategoryAndStatus(Category category, TaskStatus status, Pageable pageable);
-
-    @Override
-    @EntityGraph(attributePaths = "user")
-    Page<Task> findAll(Pageable pageable);
+    @Query("""
+            select t from Task t
+            where (:status is null or t.status = :status)
+              and (:category is null or t.category = :category)
+              and (:from is null or t.created >= :from)
+              and (:to   is null or t.created <= :to)         
+            """)
+    Page<Task> search(@Param("status") TaskStatus status,
+                      @Param("category") Category category,
+                      @Param("from") LocalDateTime from,
+                      @Param("to") LocalDateTime to,
+                      Pageable pageable);
 
     @Modifying
     @Query("delete from Task t where t.user.id = :userId")

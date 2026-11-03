@@ -11,7 +11,10 @@ import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDateTime;
 
 @RestController
 @RequestMapping("/tasks")
@@ -29,8 +32,12 @@ public class TaskController {
     public PageResponse<CreateTaskResponse> getTasks(
             @RequestParam(required = false) Category category,
             @RequestParam(required = false) TaskStatus status,
+            @RequestParam(required = false) @DateTimeFormat(iso
+                    = DateTimeFormat.ISO.DATE_TIME) LocalDateTime from,
+            @RequestParam(required = false) @DateTimeFormat(iso
+                    = DateTimeFormat.ISO.DATE_TIME) LocalDateTime to,
             @ParameterObject @PageableDefault(size = 20, sort = "id") Pageable pageable) {
-        return taskService.getTasks(category, status, pageable);
+        return taskService.getTasks(category, status, from, to, pageable);
     }
 
     @GetMapping("/{id}")
